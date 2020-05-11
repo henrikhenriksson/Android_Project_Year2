@@ -7,6 +7,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.View;
 import android.view.Menu;
@@ -29,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Fragment bathingSiteFrag = new BathingSitesFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.bathing_fragment_container, bathingSiteFrag);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
