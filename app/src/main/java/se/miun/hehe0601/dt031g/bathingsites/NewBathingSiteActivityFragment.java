@@ -8,10 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-/**
- * A simple {@link Fragment} subclass.
+/*
+ * FileName: NewBathingSiteActivity.java
+ * Author: Henrik Henriksson (hehe0601)
+ * Description This file holds the new BathingSite Activity fragment for the bathingsite app project
+ * Responsible for creating new bathingsite objects.
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-12
  */
+
+
 public class NewBathingSiteActivityFragment extends Fragment {
 
     public NewBathingSiteActivityFragment() {

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ * FileName: fragment_bathing_sites.xml
+ * Author: Henrik Henriksson (hehe0601)
+ * Description file containing the bathing_sites information layout.
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-11
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

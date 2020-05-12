@@ -1,5 +1,14 @@
 package se.miun.hehe0601.dt031g.bathingsites;
 
+/*
+ * FileName: NewBathingSiteActivity.java
+ * Author: Henrik Henriksson (hehe0601)
+ * Description This file holds the new BathingSite Activity for the bathingsite app project
+ * Used to hold the fragment that creates new bathing sites.
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-12
+ */
+
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

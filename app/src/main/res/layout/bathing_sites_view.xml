@@ -1,4 +1,12 @@
+<!--
+ * FileName: bathing_sites_view.xml
+ * Author: Henrik Henriksson (hehe0601)
+ * Description layout file for the new bathing site activity
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-11
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"

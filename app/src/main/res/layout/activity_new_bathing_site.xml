@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ * FileName: activity_new_bathing_site.xml
+ * Author: Henrik Henriksson (hehe0601)
+ * Description layout file for the new bathing site activity
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-12
+-->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

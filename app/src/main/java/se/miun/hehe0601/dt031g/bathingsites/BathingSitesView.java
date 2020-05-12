@@ -14,6 +14,15 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+/*
+ * FileName: BathingSitesView.java
+ * Author: Henrik Henriksson (hehe0601)
+ * Description This file holds a BathingSiteView for the bathingsite app project
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-11
+ */
+
+
 /**
  * TODO: document your custom view class.
  */

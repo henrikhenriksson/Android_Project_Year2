@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ * FileName: content_main.xml
+ * Author: Henrik Henriksson (hehe0601)
+ * Description file containing the layout for the new bathing site fill-in-form layout file.
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-11
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -61,8 +68,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:errorEnabled="true"
-            android:paddingRight="1dp">
+            android:paddingRight="1dp"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -76,15 +83,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:errorEnabled="true"
-            android:paddingLeft="1dp">
+            android:paddingLeft="1dp"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Longitude"
-                android:inputType="numberDecimal"
-                />
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -95,9 +101,9 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="10dp"
         android:numStars="5"
-        android:stepSize="1"
+        android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:paddingTop="5dp"/>
+        android:stepSize="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -110,8 +116,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            app:errorEnabled="true"
-            android:paddingRight="1dp">
+            android:paddingRight="1dp"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -125,8 +131,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:errorEnabled="true"
-            android:paddingLeft="1dp">
+            android:paddingLeft="1dp"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

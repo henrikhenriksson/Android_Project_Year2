@@ -1,5 +1,14 @@
 package se.miun.hehe0601.dt031g.bathingsites;
 
+/*
+ * FileName: MainActivity.java
+ * Author: Henrik Henriksson (hehe0601)
+ * Description This file holds the Main Activity for the bathingsite app project
+ * Course: DT031G project at Miun, spring 2020
+ * Since: 2020-05-11
+ */
+
+
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
