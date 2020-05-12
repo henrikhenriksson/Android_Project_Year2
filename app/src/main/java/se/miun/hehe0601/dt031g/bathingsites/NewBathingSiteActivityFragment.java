@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 /*
  * FileName: NewBathingSiteActivity.java
  * Author: Henrik Henriksson (hehe0601)
@@ -20,15 +22,17 @@ import android.view.ViewGroup;
 
 public class NewBathingSiteActivityFragment extends Fragment {
 
+
     public NewBathingSiteActivityFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_new_bathing_site_activity, container, false);
     }
+
 }
