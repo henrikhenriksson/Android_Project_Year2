@@ -30,6 +30,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 // main parts of this class fetched from https://www.youtube.com/watch?v=veOZTvAdzJ8
 public class NewBathingSiteActivity extends AppCompatActivity {
     private TextInputLayout textinputName;
@@ -51,7 +55,9 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
+        setTodaysDate();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,9 +94,17 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         // Inspiration by https://www.youtube.com/watch?v=LpNJhJF3gW8
         ratingBar = findViewById(R.id.bathing_site_rating_bar);
 
-        textinputLatitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 90)});
-        textinputLongitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 180)});
+//        textinputLatitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 90)});
+//        textinputLongitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 180)});
     }
+
+    private void setTodaysDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String todaysDate = simpleDateFormat.format(new Date());
+
+        textinputWaterTempDate.getEditText().setText(todaysDate);
+    }
+
 
     private boolean validateName() {
         String nameInput = textinputName.getEditText().getText().toString().trim();

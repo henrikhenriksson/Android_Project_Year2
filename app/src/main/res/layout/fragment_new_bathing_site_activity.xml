@@ -70,7 +70,8 @@
             android:layout_weight="1"
             android:paddingRight="1dp"
             app:errorEnabled="true">
-<!--https://stackoverflow.com/questions/7543835/configure-android-edittext-to-allow-decimals-and-negatives-->
+            <!--https://stackoverflow.com/questions/7543835/
+            configure-android-edittext-to-allow-decimals-and-negatives-->
             <EditText
                 android:id="@+id/text_input_bathing_site_latidude"
                 android:layout_width="match_parent"
