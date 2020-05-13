@@ -11,7 +11,6 @@ package se.miun.hehe0601.dt031g.bathingsites;
 import android.text.InputFilter;
 import android.text.Spanned;
 
-
 // Courtesy of https://www.tutorialspoint.com/how-to-define-a-min-and-max-value-for-edittext-in-android
 public class MinMaxFilter implements InputFilter {
 
@@ -21,7 +20,6 @@ public class MinMaxFilter implements InputFilter {
     public MinMaxFilter(double minVal, double maxVal) {
         this.mDoubleMin = minVal;
         this.mDoubleMax = maxVal;
-
     }
 
     @Override
@@ -34,9 +32,10 @@ public class MinMaxFilter implements InputFilter {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        return "Wrong Format";
+        return "";
     }
 
+    // check wether the input values in the edittext are between the specified min and max values.
     private boolean isInRange(double min, double max, double input) {
         return max > min ? input >= min && input <= max : input >= max && input <= min;
     }

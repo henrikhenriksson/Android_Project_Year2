@@ -64,33 +64,36 @@
         android:weightSum="2">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_bathing_site_latidude"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingRight="1dp"
             app:errorEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
+<!--https://stackoverflow.com/questions/7543835/configure-android-edittext-to-allow-decimals-and-negatives-->
+            <EditText
+                android:id="@+id/text_input_bathing_site_latidude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Latitude"
-                android:inputType="numberDecimal" />
+                android:hint="Latitude (+/- 0-90)"
+                android:inputType="numberSigned|numberDecimal"/>
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_bathing_site_longitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingLeft="1dp"
             app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
+                android:id="@+id/text_input_bathing_site_longitude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Longitude"
-                android:inputType="numberDecimal" />
+                android:hint="Longitude (+/- 0-180)"
+                android:inputType="numberSigned|numberDecimal"/>
+
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -138,7 +141,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Date For Temp"
-                android:inputType="date" />
+                android:inputType="datetime" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 

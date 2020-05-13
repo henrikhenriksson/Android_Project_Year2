@@ -70,20 +70,6 @@ public class BathingSitesView extends ConstraintLayout {
     public void setBathingSites() {
         bathingSites.setText(bathSiteCounter + " Bathing Sites");
     }
-    //    private void invalidateTextPaintAndMeasurements() {
-//        mTextPaint.setTextSize(mExampleDimension);
-//        mTextPaint.setColor(mExampleColor);
-//        mTextWidth = mTextPaint.measureText(mExampleString);
-//
-//        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-//        mTextHeight = fontMetrics.bottom;
 
-//    // Load attributes
-//    final TypedArray a = getContext().obtainStyledAttributes(
-//            attrs, R.styleable.BathingSitesView, 0, 0);
-//
-//
-//        a.recycle();
-////    }
 
 }

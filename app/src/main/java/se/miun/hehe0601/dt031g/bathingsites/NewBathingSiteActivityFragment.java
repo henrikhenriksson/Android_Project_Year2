@@ -2,7 +2,9 @@ package se.miun.hehe0601.dt031g.bathingsites;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +24,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class NewBathingSiteActivityFragment extends Fragment {
 
-
-    public NewBathingSiteActivityFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,5 +31,9 @@ public class NewBathingSiteActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_new_bathing_site_activity, container, false);
     }
+
+//    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//    }
 
 }

@@ -28,7 +28,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:name="se.miun.hehe0601.dt031g.bathingsites.BathingSitesFragment"
+        tools:layout="@layout/fragment_bathing_sites"
+        android:id="@+id/Portrait_bathing_site_activity_fragment" />
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_new_bathing_site"

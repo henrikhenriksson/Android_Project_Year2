@@ -9,6 +9,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
  */
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,16 +37,11 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(MainActivity.this, NewBathingSiteActivity.class);
+                startActivity(i);
             }
         });
 
-        Fragment bathingSiteFrag = new BathingSitesFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.bathing_fragment_container, bathingSiteFrag);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     @Override
