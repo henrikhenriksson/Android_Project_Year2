@@ -46,8 +46,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/swimicon"
-        android:backgroundTint="@color/cerulean"
-        android:background="@color/plumpPurple"
+        android:backgroundTint="@color/white"
+        android:background="@color/colorPrimaryDark"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

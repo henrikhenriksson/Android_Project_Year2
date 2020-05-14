@@ -213,6 +213,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         textinputLongitude.getText().clear();
         textinputWaterTemp.getEditText().getText().clear();
         textinputWaterTempDate.getEditText().getText().clear();
+        ratingBar.setRating(0);
         Toast.makeText(this, "All input has been cleared", Toast.LENGTH_SHORT).show();
     }
 
