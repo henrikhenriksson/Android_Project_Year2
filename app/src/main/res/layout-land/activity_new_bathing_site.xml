@@ -35,7 +35,7 @@
         android:weightSum="2"
         android:baselineAligned="false">
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@id/landscape_bathing_site_activiy_fragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -43,7 +43,7 @@
             tools:layout="@layout/fragment_bathing_sites"
             android:layout_weight="1"/>
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:name="se.miun.hehe0601.dt031g.bathingsites.NewBathingSiteActivityFragment"

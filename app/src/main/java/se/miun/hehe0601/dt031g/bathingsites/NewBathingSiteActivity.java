@@ -9,18 +9,15 @@ package se.miun.hehe0601.dt031g.bathingsites;
  * Since: 2020-05-12
  */
 
-import android.location.Address;
+
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +27,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 // main parts of this class fetched from https://www.youtube.com/watch?v=veOZTvAdzJ8
 public class NewBathingSiteActivity extends AppCompatActivity {
@@ -47,14 +44,19 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     private CoordinatorLayout coordinatorLayout;
 
+    private boolean hasCoordinates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bathing_site);
         Toolbar toolbar = findViewById(R.id.new_bathing_site_tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
+        hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
+                && !textinputLongitude.getText().toString().isEmpty();
         setTodaysDate();
     }
 
@@ -122,37 +124,51 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         String addressInput = textinputAddress.getEditText().getText().toString().trim();
         if (addressInput.isEmpty()) {
-            textinputAddress.setError("This Field is Required. ");
-            return false;
-        } else {
-            textinputAddress.setError(null);
-            return true;
+            if (!validateLatLng()) {
+                textinputAddress.setError("Address or coordinates are required. ");
+                textinputLatitude.setError("Address or coordinates are required. ");
+                textinputLongitude.setError("Address or coordinates are required. ");
+                return false;
+            }
         }
+        textinputAddress.setError(null);
+        return true;
 
 
     }
 
+    // Lat and long are required if there is no address. If there is an address, Lat and long are optional
     private boolean validateLatLng() {
-        String inputLat = textinputLatitude.getText().toString();
-        String inputLong = textinputLongitude.getText().toString();
 
-        if (inputLat.isEmpty()) {
-            textinputLatitude.setError("This Field is Required. ");
-            return false;
-        }
+        boolean isValidLatLng = false;
 
-        if (inputLong.isEmpty()) {
-            textinputLongitude.setError("This Field is Required. ");
-            return false;
+        if (!textinputLatitude.getText().toString().isEmpty()
+                && !textinputLongitude.getText().toString().isEmpty()) {
+            double inputLat = Double.parseDouble(textinputLatitude.getText().toString());
+            double inputLong = Double.parseDouble(textinputLongitude.getText().toString());
+            isValidLatLng = isInRange(inputLat, inputLong);
         }
-        return true;
+        return isValidLatLng;
+    }
+
+    private boolean isInRange(double lati, double longi) {
+        return lati >= -90 && lati <= 90 && longi >= -180 && longi <= 180;
     }
 
     // only one pipe to ensure all methods are called. A locical "OR" would not call the following
     // method call if the previous returned false
     public void confirmInput() {
-        if (!validateName() | !validateAddress() | !validateLatLng()) {
+
+
+        if (!validateName() | !validateAddress()) {
             return;
+        }
+        if (hasCoordinates) {
+            if (!validateLatLng()) {
+                textinputLongitude.setError("Invalid latitude/longitude");
+                textinputLatitude.setError("Invalid latitude/longitude");
+                return;
+            }
         }
         saveValidData();
     }
@@ -162,8 +178,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         String inputName = textinputName.getEditText().getText().toString();
         String inputDesc = textinputDescription.getEditText().getText().toString();
         String inputAddress = textinputAddress.getEditText().getText().toString();
-        Double inputLat = Double.parseDouble(textinputLatitude.getText().toString());
-        Double inputLong = Double.parseDouble(textinputLongitude.getText().toString());
+        String inputLat = textinputLatitude.getText().toString();
+        String inputLong = textinputLatitude.getText().toString();
         String waterTemp = textinputWaterTemp.getEditText().getText().toString();
         String waterTempDate = textinputWaterTempDate.getEditText().getText().toString();
         String rating = String.valueOf(ratingBar.getRating());
@@ -180,7 +196,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 .append("Date For WaterTemp: " + waterTempDate);
 
         // https://stackoverflow.com/questions/32228300/how-to-prevent-my-snackbar-text-from-being-truncated-on-android
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, sb.toString(), Snackbar.LENGTH_INDEFINITE);
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, sb.toString(), Snackbar.LENGTH_LONG);
         View snackbarview = snackbar.getView();
         TextView snackTextView = snackbarview.findViewById(com.google.android.material.R.id.snackbar_text);
         snackTextView.setMaxLines(30);
