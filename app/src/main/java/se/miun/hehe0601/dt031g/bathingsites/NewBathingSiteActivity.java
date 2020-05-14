@@ -30,6 +30,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 // main parts of this class fetched from https://www.youtube.com/watch?v=veOZTvAdzJ8
 public class NewBathingSiteActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_bathing_site);
         Toolbar toolbar = findViewById(R.id.new_bathing_site_tool_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
         hasCoordinates = !textinputLongitude.getText().toString().isEmpty()

@@ -23,7 +23,7 @@
             android:id="@+id/new_bathing_site_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary">
+            android:background="@color/plumpPurple">
         </androidx.appcompat.widget.Toolbar>
 
 

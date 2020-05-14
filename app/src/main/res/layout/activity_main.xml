@@ -23,7 +23,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+
+            android:background="@color/plumpPurple"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -45,7 +46,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/swimicon"
-        android:background="@color/colorPrimaryDark"
+        android:backgroundTint="@color/cerulean"
+        android:background="@color/plumpPurple"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
