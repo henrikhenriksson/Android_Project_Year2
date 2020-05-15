@@ -134,8 +134,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         }
         textinputAddress.setError(null);
         return true;
-
-
     }
 
     // Lat and long are required if there is no address. If there is an address, Lat and long are optional
