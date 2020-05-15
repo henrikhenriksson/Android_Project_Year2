@@ -10,6 +10,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
  */
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -23,10 +24,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -44,6 +55,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     private RatingBar ratingBar;
 
     private CoordinatorLayout coordinatorLayout;
+    private ProgressBar loadWeatherProgressBar;
 
     private boolean hasCoordinates;
 
@@ -81,6 +93,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             case R.id.action_clear:
                 clearInput();
                 break;
+            case R.id.action_weather:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -96,6 +110,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         // Inspiration by https://www.youtube.com/watch?v=LpNJhJF3gW8
         ratingBar = findViewById(R.id.bathing_site_rating_bar);
+
+        loadWeatherProgressBar = findViewById(R.id.weather_progress_bar);
 
 //        textinputLatitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 90)});
 //        textinputLongitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 180)});
@@ -157,8 +173,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     // only one pipe to ensure all methods are called. A locical "OR" would not call the following
     // method call if the previous returned false
     public void confirmInput() {
-
-
         if (!validateName() | !validateAddress()) {
             return;
         }
@@ -214,5 +228,104 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         ratingBar.setRating(0);
         Toast.makeText(this, "All input has been cleared", Toast.LENGTH_SHORT).show();
     }
+
+    private void showWeatherInfo() {
+
+        String latitude;
+        String longitude;
+        boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty()
+        String bathingSiteLocation;
+
+        if (hasCoordinates) {
+            if (validateLatLng()) {
+                latitude = textinputLatitude.getText().toString().trim();
+                longitude = textinputLongitude.getText().toString().trim();
+                bathingSiteLocation = "?lat=" + latitude + "&lon=" + longitude;
+            } else {
+                if (hasAddress) {
+                    bathingSiteLocation = "?q=" + textinputAddress.getEditText().getText().toString().trim();
+                } else {
+                    Toast.makeText(this, "No address or coordinates specified.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+
+    }
+
+    // Source: https://stackoverflow.com/questions/33229869/get-json-data-from-url-using-android
+    private class getWeatherinformation extends AsyncTask<String, String, String> {
+        private String weatherUrl;
+
+        @Override
+        protected void onPreExecute() {
+            //TODO get this from sharedpreferences:
+            weatherUrl = "https://dt031g.programvaruteknik.nu/bathingsites/weather.php";
+            loadWeatherProgressBar.setMax(100);
+            loadWeatherProgressBar.setProgress(0);
+            loadWeatherProgressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+
+            weatherUrl = "https://dt031g.programvaruteknik.nu/bathingsites/weather.php";
+
+            try {
+                URL url = new URL(weatherUrl);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                InputStream is = connection.getInputStream();
+
+                reader = new BufferedReader((new InputStreamReader(is)));
+
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                return buffer.toString();
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            loadWeatherProgressBar.setVisibility(View.INVISIBLE);
+
+            if(s == null) {
+                return;
+            }
+
+            super.onPostExecute(s);
+        }
+    }
+
 
 }
