@@ -16,10 +16,12 @@ import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.util.JsonReader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -94,6 +96,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 clearInput();
                 break;
             case R.id.action_weather:
+                showWeatherInfo();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -233,7 +236,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         String latitude;
         String longitude;
-        boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty()
+        boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty();
         String bathingSiteLocation;
 
         if (hasCoordinates) {
@@ -241,15 +244,12 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 latitude = textinputLatitude.getText().toString().trim();
                 longitude = textinputLongitude.getText().toString().trim();
                 bathingSiteLocation = "?lat=" + latitude + "&lon=" + longitude;
-            } else {
-                if (hasAddress) {
-                    bathingSiteLocation = "?q=" + textinputAddress.getEditText().getText().toString().trim();
-                } else {
-                    Toast.makeText(this, "No address or coordinates specified.", Toast.LENGTH_SHORT).show();
-                }
             }
+        } else if (hasAddress) {
+            bathingSiteLocation = "?q=" + textinputAddress.getEditText().getText().toString().trim();
+        } else {
+            Toast.makeText(this, "No address or coordinates specified.", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
@@ -273,8 +273,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
             HttpURLConnection connection = null;
             BufferedReader reader = null;
-
-            weatherUrl = "https://dt031g.programvaruteknik.nu/bathingsites/weather.php";
 
             try {
                 URL url = new URL(weatherUrl);
@@ -319,12 +317,20 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             loadWeatherProgressBar.setVisibility(View.INVISIBLE);
 
-            if(s == null) {
+            if (s == null) {
                 return;
             }
 
+            ShowWeatherDialog(s);
             super.onPostExecute(s);
         }
+    }
+
+    private void ShowWeatherDialog(String s) {
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+        adb.setTitle("Bathing Site Weather");
+
     }
 
 
