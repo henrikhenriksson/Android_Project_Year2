@@ -81,8 +81,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
-//        hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
-//                && !textinputLongitude.getText().toString().isEmpty();
         setTodaysDate();
     }
 
@@ -203,37 +201,50 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 return;
             }
         }
-        saveValidData();
+        new saveBathingSite().execute();
     }
 
-    private void saveValidData() {
-        // Local variables as we only wish to save them if they are valid.
-        String inputName = textinputName.getEditText().getText().toString();
-        String inputDesc = textinputDescription.getEditText().getText().toString();
-        String inputAddress = textinputAddress.getEditText().getText().toString();
-        String inputLat = textinputLatitude.getText().toString();
-        String inputLong = textinputLongitude.getText().toString();
-        String waterTemp = textinputWaterTemp.getEditText().getText().toString();
-        String waterTempDate = textinputWaterTempDate.getEditText().getText().toString();
-        String rating = String.valueOf(ratingBar.getRating());
+//    private void saveValidData() {
+//        // Local variables as we only wish to save them if they are valid.
+//        String inputName = textinputName.getEditText().getText().toString();
+//        String inputDesc = textinputDescription.getEditText().getText().toString();
+//        String inputAddress = textinputAddress.getEditText().getText().toString();
+//        String inputLat = textinputLatitude.getText().toString();
+//        String inputLong = textinputLongitude.getText().toString();
+//        String waterTemp = textinputWaterTemp.getEditText().getText().toString();
+//        String waterTempDate = textinputWaterTempDate.getEditText().getText().toString();
+//        String rating = String.valueOf(ratingBar.getRating());
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        sb.append("Name: " + inputName + "\n")
+//                .append("Description: " + inputDesc + "\n")
+//                .append("Address: " + inputAddress + "\n")
+//                .append("Latitude: " + inputLat + " ")
+//                .append("Longitude: " + inputLong + "\n")
+//                .append("Rating: " + rating + "\n")
+//                .append("Water Temp: " + waterTemp + "\n")
+//                .append("Date For WaterTemp: " + waterTempDate);
+//
+//        // https://stackoverflow.com/questions/32228300/how-to-prevent-my-snackbar-text-from-being-truncated-on-android
+//        Snackbar snackbar = Snackbar.make(coordinatorLayout, sb.toString(), Snackbar.LENGTH_LONG);
+//        View snackbarview = snackbar.getView();
+//        TextView snackTextView = snackbarview.findViewById(com.google.android.material.R.id.snackbar_text);
+//        snackTextView.setMaxLines(30);
+//        snackbar.show();
+//    }
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Name: " + inputName + "\n")
-                .append("Description: " + inputDesc + "\n")
-                .append("Address: " + inputAddress + "\n")
-                .append("Latitude: " + inputLat + " ")
-                .append("Longitude: " + inputLong + "\n")
-                .append("Rating: " + rating + "\n")
-                .append("Water Temp: " + waterTemp + "\n")
-                .append("Date For WaterTemp: " + waterTempDate);
-
-        // https://stackoverflow.com/questions/32228300/how-to-prevent-my-snackbar-text-from-being-truncated-on-android
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, sb.toString(), Snackbar.LENGTH_LONG);
-        View snackbarview = snackbar.getView();
-        TextView snackTextView = snackbarview.findViewById(com.google.android.material.R.id.snackbar_text);
-        snackTextView.setMaxLines(30);
-        snackbar.show();
+    private Map<String, String> getValidData() {
+        Map<String, String> inputData = new LinkedHashMap<String, String>();
+        inputData.put("name", textinputName.getEditText().getText().toString().trim());
+        inputData.put("description", textinputDescription.getEditText().getText().toString().trim());
+        inputData.put("address", textinputAddress.getEditText().getText().toString().trim());
+        inputData.put("latitude", textinputLatitude.getText().toString().trim());
+        inputData.put("longitude", textinputLongitude.getText().toString().trim());
+        inputData.put("waterTemp", textinputWaterTemp.getEditText().getText().toString().trim());
+        inputData.put("waterTempDate", textinputWaterTempDate.getEditText().getText().toString().trim());
+        inputData.put("rating", String.valueOf(ratingBar.getRating()));
+        return inputData;
     }
 
     // https://android--code.blogspot.com/2015/08/android-edittext-clear.html
@@ -395,6 +406,54 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             weatherDialog.show();
 
             super.onPostExecute(data);
+        }
+    }
+
+    private class saveBathingSite extends AsyncTask<String, String, Map<String, String>> {
+        private Map<String, String> inputData;
+        BathingSite bathingSite;
+
+        @Override
+        protected Map<String, String> doInBackground(String... strings) {
+
+            inputData = getValidData();
+
+
+            bathingSite = new BathingSite(inputData.get("name"),
+                    inputData.get("description"), inputData.get("address"),
+                    inputData.get("latitude"), inputData.get("longitude"),
+                    inputData.get("grade"), inputData.get("waterTemp"),
+                    inputData.get("waterTempDate"));
+
+            AppDataBase.getDataBase(NewBathingSiteActivity.this).bathingSiteDao().addBathingSite(bathingSite);
+
+            return inputData;
+        }
+
+        @Override
+        protected void onPostExecute(Map<String, String> inputData) {
+
+            if (inputData == null) {
+                Toast.makeText(NewBathingSiteActivity.this, "Something whent wrong saving the data.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+            adb.setTitle("Saved New Location");
+            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + "Was added to the database");
+
+
+            adb.setCancelable(true);
+            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog newBathingSiteDialog = adb.create();
+
+            newBathingSiteDialog.show();
+            super.onPostExecute(inputData);
         }
     }
 }

@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
 
 // source: https://developer.android.com/training/data-storage/room/defining-data
 
-@Entity(indices = {@Index(value={"longitude", "latitude"}, unique = true)})
+@Entity(indices = {@Index(value = {"longitude", "latitude"}, unique = true)})
 public class BathingSite {
 
     @PrimaryKey(autoGenerate = true)
@@ -33,7 +33,7 @@ public class BathingSite {
     public double longitude;
 
     @ColumnInfo(name = "grade")
-    public int grade;
+    public double grade;
 
     @ColumnInfo(name = "water_temp")
     public double waterTemp;
@@ -41,8 +41,10 @@ public class BathingSite {
     @ColumnInfo(name = "temp_date")
     public String tempDate;
 
-    public BathingSite(int uid, String bathingSiteName, String bathingSiteDescription, String bathingSiteAddress, double latitude, double longitude, int grade, double waterTemp, String tempDate) {
-        this.uid = uid;
+    public BathingSite(String bathingSiteName, String bathingSiteDescription,
+                       String bathingSiteAddress,  double latitude,
+                       double longitude,  double grade,
+                        double waterTemp, String tempDate) {
         this.bathingSiteName = bathingSiteName;
         this.bathingSiteDescription = bathingSiteDescription;
         this.bathingSiteAddress = bathingSiteAddress;
@@ -52,6 +54,7 @@ public class BathingSite {
         this.waterTemp = waterTemp;
         this.tempDate = tempDate;
     }
+
 
     @Override
     public String toString() {
@@ -66,5 +69,9 @@ public class BathingSite {
                 "\n waterTemp=" + waterTemp +
                 "\n tempDate='" + tempDate + '\'' +
                 '}';
+    }
+
+    public String getBathingSiteName() {
+        return bathingSiteName;
     }
 }
