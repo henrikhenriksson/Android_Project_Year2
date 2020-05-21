@@ -72,8 +72,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     private ProgressBar loadWeatherProgressBar;
 
 
-    private boolean hasCoordinates;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +81,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
-        hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
-                && !textinputLongitude.getText().toString().isEmpty();
+//        hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
+//                && !textinputLongitude.getText().toString().isEmpty();
         setTodaysDate();
     }
 
@@ -132,6 +130,15 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     }
 
+    private boolean hasCoordinates() {
+        return !textinputLongitude.getText().toString().isEmpty()
+                && !textinputLongitude.getText().toString().isEmpty();
+    }
+
+    private boolean hasAddress() {
+        return !textinputAddress.getEditText().getText().toString().trim().isEmpty();
+    }
+
     private void setTodaysDate() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String todaysDate = simpleDateFormat.format(new Date());
@@ -154,8 +161,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     private boolean validateAddress() {
 
-        String addressInput = textinputAddress.getEditText().getText().toString().trim();
-        if (addressInput.isEmpty()) {
+        if (!hasAddress()) {
             if (!validateLatLng()) {
                 textinputAddress.setError("Address or coordinates are required. ");
                 textinputLatitude.setError("Address or coordinates are required. ");
@@ -172,8 +178,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         boolean isValidLatLng = false;
 
-        if (!textinputLatitude.getText().toString().isEmpty()
-                && !textinputLongitude.getText().toString().isEmpty()) {
+        if (hasCoordinates()) {
             double inputLat = Double.parseDouble(textinputLatitude.getText().toString());
             double inputLong = Double.parseDouble(textinputLongitude.getText().toString());
             isValidLatLng = isInRange(inputLat, inputLong);
@@ -191,7 +196,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         if (!validateName() | !validateAddress()) {
             return;
         }
-        if (hasCoordinates) {
+        if (hasCoordinates()) {
             if (!validateLatLng()) {
                 textinputLongitude.setError("Invalid latitude/longitude");
                 textinputLatitude.setError("Invalid latitude/longitude");
@@ -248,21 +253,20 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         String latitude;
         String longitude;
-        hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
-                && !textinputLongitude.getText().toString().isEmpty();
-        boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty();
+
+        //  boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(NewBathingSiteActivity.this);
         String weatherUrl = preferences.getString("url_weather", "null");
 
         String bathingSiteLocation = "";
 
-        if (hasCoordinates) {
+        if (hasCoordinates()) {
             if (validateLatLng()) {
                 latitude = textinputLatitude.getText().toString().trim();
                 longitude = textinputLongitude.getText().toString().trim();
                 bathingSiteLocation = "?lat=" + latitude + "&lon=" + longitude;
             }
-        } else if (hasAddress) {
+        } else if (hasAddress()) {
             bathingSiteLocation = "?q=" + textinputAddress.getEditText().getText().toString().trim();
         } else {
             Toast.makeText(this, "No address or coordinates specified.", Toast.LENGTH_SHORT).show();
@@ -310,87 +314,87 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
             Request request = new Request.Builder().url(url).build();
 
+            try {
+                // create a response that data can be fetched from to JSONobjects.
+                // We want to catch any errors in the URL here:
+                Response response = null;
                 try {
-                    // create a response that data can be fetched from to JSONobjects.
-                    // We want to catch any errors in the URL here:
-                    Response response = null;
-                    try {
-                        response = client.newCall(request).execute();
-                    } catch (UnknownHostException e) {
-                        return null;
+                    response = client.newCall(request).execute();
+                } catch (UnknownHostException e) {
+                    return null;
+                }
+
+
+                // get the body of the response
+                JSONObject jsonObject = new JSONObject(response.body().string());
+                JSONObject mainObj = jsonObject.getJSONObject("main");
+                // The tag weather is an array with 1 entry at index 0
+                JSONArray weatherArray = jsonObject.getJSONArray("weather");
+                JSONObject weatherObj = (JSONObject) weatherArray.get(0);
+
+                // Objects to fetch from the Json Object
+                String description = weatherArray.getJSONObject(0).getString("description");
+                String icon = weatherArray.getJSONObject(0).getString("icon") + ".png";
+                String temperature = mainObj.getString("temp");
+                String location = jsonObject.getString("name");
+                fetchedWeatherData.put("description", description);
+                fetchedWeatherData.put("temperature", temperature);
+                fetchedWeatherData.put("location", location);
+
+                URL iconUrl = new URL(iconImgUrl + icon);
+                connection = (HttpURLConnection) iconUrl.openConnection();
+                connection.connect();
+                is = connection.getInputStream();
+                iconImg = Drawable.createFromStream(is, null);
+
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (is != null) {
+                        is.close();
                     }
-
-
-                    // get the body of the response
-                    JSONObject jsonObject = new JSONObject(response.body().string());
-                    JSONObject mainObj = jsonObject.getJSONObject("main");
-                    // The tag weather is an array with 1 entry at index 0
-                    JSONArray weatherArray = jsonObject.getJSONArray("weather");
-                    JSONObject weatherObj = (JSONObject) weatherArray.get(0);
-
-                    // Objects to fetch from the Json Object
-                    String description = weatherArray.getJSONObject(0).getString("description");
-                    String icon = weatherArray.getJSONObject(0).getString("icon") + ".png";
-                    String temperature = mainObj.getString("temp");
-                    String location = jsonObject.getString("name");
-                    fetchedWeatherData.put("description", description);
-                    fetchedWeatherData.put("temperature", temperature);
-                    fetchedWeatherData.put("location", location);
-
-                    URL iconUrl = new URL(iconImgUrl + icon);
-                    connection = (HttpURLConnection) iconUrl.openConnection();
-                    connection.connect();
-                    is = connection.getInputStream();
-                    iconImg = Drawable.createFromStream(is, null);
-
-                } catch (IOException | JSONException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
-                } finally {
-                    try {
-                        if (is != null) {
-                            is.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
-
-                return fetchedWeatherData;
             }
 
+            return fetchedWeatherData;
+        }
 
-            @Override
-            protected void onPostExecute (Map < String, String > data){
 
-                loadWeatherProgressBar.setVisibility(View.INVISIBLE);
+        @Override
+        protected void onPostExecute(Map<String, String> data) {
 
-                if (data == null) {
-                    Toast.makeText(NewBathingSiteActivity.this, "No Weather data was found", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            loadWeatherProgressBar.setVisibility(View.INVISIBLE);
 
-                StringBuilder sb = new StringBuilder();
-                sb.append(data.get("location") + "\n")
-                        .append(data.get("description")).append("\n")
-                        .append(data.get("temperature") + " degrees");
-
-                AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
-                adb.setTitle("Current Weather");
-                adb.setMessage(sb.toString());
-                adb.setIcon(iconImg);
-
-                adb.setCancelable(true);
-                adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog weatherDialog = adb.create();
-
-                weatherDialog.show();
-
-                super.onPostExecute(data);
+            if (data == null) {
+                Toast.makeText(NewBathingSiteActivity.this, "No Weather data was found", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(data.get("location") + "\n")
+                    .append(data.get("description")).append("\n")
+                    .append(data.get("temperature") + " degrees");
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+            adb.setTitle("Current Weather");
+            adb.setMessage(sb.toString());
+            adb.setIcon(iconImg);
+
+            adb.setCancelable(true);
+            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog weatherDialog = adb.create();
+
+            weatherDialog.show();
+
+            super.onPostExecute(data);
         }
     }
+}
