@@ -3,10 +3,10 @@
     <PreferenceCategory app:title="Weather">
 
         <EditTextPreference
-            app:key="url_weather"
             app:defaultValue="https://dt031g.programvaruteknik.nu/bathingsites/weather.php"
-            app:title="Weather Service URL"
-            app:useSimpleSummaryProvider="true" />
+            app:key="url_weather"
+            app:summary=""
+            app:title="Weather Service URL" />
 
 
     </PreferenceCategory>

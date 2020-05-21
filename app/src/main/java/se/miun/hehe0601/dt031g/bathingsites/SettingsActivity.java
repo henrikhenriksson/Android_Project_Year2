@@ -35,7 +35,8 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
             final EditTextPreference weatherURL = findPreference("url_weather");
-            weatherURL.setText(weatherURL.getText());
+            assert weatherURL != null;
+            weatherURL.setSummary(weatherURL.getText());
 
             weatherURL.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -47,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(getContext(), "Invalid URL, no changes saved.", Toast.LENGTH_SHORT).show();
                         return false;
                     }
-                    weatherURL.setText(newValue.toString());
+                    weatherURL.setSummary(newValue.toString());
                     return true;
                 }
             });

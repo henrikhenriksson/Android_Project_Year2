@@ -130,8 +130,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         loadWeatherProgressBar = findViewById(R.id.weather_progress_bar);
 
-//        textinputLatitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 90)});
-//        textinputLongitude.setFilters(new MinMaxFilter[]{new MinMaxFilter((-90), 180)});
     }
 
     private void setTodaysDate() {
