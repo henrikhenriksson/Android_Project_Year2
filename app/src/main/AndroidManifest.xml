@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.miun.hehe0601.dt031g.bathingsites">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,22 +11,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<!--        <activity-->
-<!--            android:name=".NewBathingSiteActivity"-->
-<!--            android:parentActivityName=".MainActivity"-->
-<!--            android:label="@string/title_activity_new_bathing_site"-->
-<!--            android:theme="@style/AppTheme.NoActionBar"></activity>-->
-
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <!-- <activity -->
+        <!-- android:name=".NewBathingSiteActivity" -->
+        <!-- android:parentActivityName=".MainActivity" -->
+        <!-- android:label="@string/title_activity_new_bathing_site" -->
+        <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
         <activity
             android:name=".NewBathingSiteActivity"
-            android:parentActivityName=".MainActivity"
             android:label="@string/title_activity_new_bathing_site"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-            android:value="se.miun.hehe0601.dt031g.bathingsites.MainActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.miun.hehe0601.dt031g.bathingsites.MainActivity" />
         </activity>
-
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
