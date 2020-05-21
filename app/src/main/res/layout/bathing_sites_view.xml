@@ -20,14 +20,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/swim_white_icon" />
+        app:srcCompat="@drawable/swim_white_icon"
+        android:contentDescription="@string/bathing_site_image" />
 
     <TextView
         android:id="@+id/bathingSiteText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text=" Bathing Sites"
+        android:text="@string/bathing_sites"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
