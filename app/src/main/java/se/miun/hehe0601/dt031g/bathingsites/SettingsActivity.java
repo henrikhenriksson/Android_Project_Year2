@@ -1,10 +1,16 @@
 package se.miun.hehe0601.dt031g.bathingsites;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -22,10 +28,29 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Source: https://stackoverflow.com/questions/20592659/edittextpreference-settextvalue-not-updating-as-expected
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+            final EditTextPreference weatherURL = findPreference("url_weather");
+            weatherURL.setText(weatherURL.getText());
+
+            weatherURL.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    // Attempt to create a new URL object of the input value. If it fails, the URL was malformed.
+                    try {
+                        URL newUrl = new URL(newValue.toString());
+                    } catch (MalformedURLException e) {
+                        Toast.makeText(getContext(), "Invalid URL, no changes saved.", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    weatherURL.setText(newValue.toString());
+                    return true;
+                }
+            });
         }
     }
 }

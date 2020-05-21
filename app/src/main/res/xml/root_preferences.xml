@@ -4,10 +4,8 @@
 
         <EditTextPreference
             app:key="url_weather"
-            app:summary="URL to weather Service Provider"
             app:defaultValue="https://dt031g.programvaruteknik.nu/bathingsites/weather.php"
-
-            app:title="@string/signature_title"
+            app:title="Weather Service URL"
             app:useSimpleSummaryProvider="true" />
 
 

@@ -11,6 +11,8 @@ package se.miun.hehe0601.dt031g.bathingsites;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +28,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.renderscript.ScriptGroup;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +50,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -93,9 +98,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         switch (item.getItemId()) {
             case R.id.action_save:
                 confirmInput();
@@ -104,9 +107,11 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 clearInput();
                 break;
             case R.id.action_weather:
-
                 showWeatherInfo();
                 break;
+            case R.id.action_settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -248,6 +253,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         hasCoordinates = !textinputLongitude.getText().toString().isEmpty()
                 && !textinputLongitude.getText().toString().isEmpty();
         boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(NewBathingSiteActivity.this);
+        String weatherUrl = preferences.getString("url_weather", "null");
 
         String bathingSiteLocation = "";
 
@@ -263,13 +270,13 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             Toast.makeText(this, "No address or coordinates specified.", Toast.LENGTH_SHORT).show();
             return;
         }
-        new getWeatherinformation().execute(bathingSiteLocation);
+        new getWeatherInformation().execute(weatherUrl, bathingSiteLocation);
 
     }
 
     // Source: https://stackoverflow.com/questions/33229869/get-json-data-from-url-using-android
     // Soucre https://square.github.io/okhttp/
-    private class getWeatherinformation extends AsyncTask<String, String, Map<String, String>> {
+    private class getWeatherInformation extends AsyncTask<String, String, Map<String, String>> {
         //TODO Add weatherURL and IconImgUrl to sharedprefs.
         private String weatherUrl;
         private String iconImgUrl;
@@ -279,22 +286,15 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-
             loadWeatherProgressBar.setMax(100);
             loadWeatherProgressBar.setProgress(0);
             loadWeatherProgressBar.setVisibility(View.VISIBLE);
-
-            // Reset the Map between each query.
-
             super.onPreExecute();
-
         }
 
         @Override
         protected Map<String, String> doInBackground(String... strings) {
 
-            //TODO get this from sharedpreferences:
-            weatherUrl = "https://dt031g.programvaruteknik.nu/bathingsites/weather.php" + strings[0];
             iconImgUrl = "https://openweathermap.org/img/w/";
 
             OkHttpClient client = new OkHttpClient();
@@ -305,89 +305,94 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             fetchedWeatherData = new LinkedHashMap<String, String>();
             URL url = null;
             try {
-                url = new URL(weatherUrl);
+                url = new URL(strings[0] + strings[1]);
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                return null;
             }
 
-
-//            Request request = new Request.Builder().url(weatherUrl + strings[0]).build();
             Request request = new Request.Builder().url(url).build();
 
-            try {
-                // create a response that data can be fetched from to JSONobjects.
-                Response response = client.newCall(request).execute();
-                // get the body of the response
-                JSONObject jsonObject = new JSONObject(response.body().string());
-                JSONObject mainObj = jsonObject.getJSONObject("main");
-                // The tag weather is an array with 1 entry at index 0
-                JSONArray weatherArray = jsonObject.getJSONArray("weather");
-                JSONObject weatherObj = (JSONObject) weatherArray.get(0);
-
-                // Objects to fetch from the Json Object
-                String description = weatherArray.getJSONObject(0).getString("description");
-                String icon = weatherArray.getJSONObject(0).getString("icon") + ".png";
-                String temperature = mainObj.getString("temp");
-                String location = jsonObject.getString("name");
-                fetchedWeatherData.put("description", description);
-                fetchedWeatherData.put("temperature", temperature);
-                fetchedWeatherData.put("location", location);
-
-
-                URL iconUrl = new URL(iconImgUrl + icon);
-                connection = (HttpURLConnection) iconUrl.openConnection();
-                connection.connect();
-                is = connection.getInputStream();
-
-                iconImg = Drawable.createFromStream(is, null);
-
-
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            } finally {
                 try {
-                    is.close();
-                } catch (IOException e) {
+                    // create a response that data can be fetched from to JSONobjects.
+                    // We want to catch any errors in the URL here:
+                    Response response = null;
+                    try {
+                        response = client.newCall(request).execute();
+                    } catch (UnknownHostException e) {
+                        return null;
+                    }
+
+
+                    // get the body of the response
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    JSONObject mainObj = jsonObject.getJSONObject("main");
+                    // The tag weather is an array with 1 entry at index 0
+                    JSONArray weatherArray = jsonObject.getJSONArray("weather");
+                    JSONObject weatherObj = (JSONObject) weatherArray.get(0);
+
+                    // Objects to fetch from the Json Object
+                    String description = weatherArray.getJSONObject(0).getString("description");
+                    String icon = weatherArray.getJSONObject(0).getString("icon") + ".png";
+                    String temperature = mainObj.getString("temp");
+                    String location = jsonObject.getString("name");
+                    fetchedWeatherData.put("description", description);
+                    fetchedWeatherData.put("temperature", temperature);
+                    fetchedWeatherData.put("location", location);
+
+                    URL iconUrl = new URL(iconImgUrl + icon);
+                    connection = (HttpURLConnection) iconUrl.openConnection();
+                    connection.connect();
+                    is = connection.getInputStream();
+                    iconImg = Drawable.createFromStream(is, null);
+
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+
+                return fetchedWeatherData;
             }
 
-            return fetchedWeatherData;
-        }
 
+            @Override
+            protected void onPostExecute (Map < String, String > data){
 
-        @Override
-        protected void onPostExecute(Map<String, String> data) {
+                loadWeatherProgressBar.setVisibility(View.INVISIBLE);
 
-            loadWeatherProgressBar.setVisibility(View.INVISIBLE);
-
-            if (data == null) {
-                Toast.makeText(NewBathingSiteActivity.this, "No Weather data was found", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(data.get("location") + "\n")
-                    .append(data.get("description")).append("\n")
-                    .append(data.get("temperature") + " degrees");
-
-            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
-            adb.setTitle("Current Weather");
-            adb.setMessage(sb.toString());
-            adb.setIcon(iconImg);
-
-            adb.setCancelable(true);
-            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
+                if (data == null) {
+                    Toast.makeText(NewBathingSiteActivity.this, "No Weather data was found", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-            });
-            AlertDialog weatherDialog = adb.create();
 
-            weatherDialog.show();
+                StringBuilder sb = new StringBuilder();
+                sb.append(data.get("location") + "\n")
+                        .append(data.get("description")).append("\n")
+                        .append(data.get("temperature") + " degrees");
 
-            super.onPostExecute(data);
+                AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+                adb.setTitle("Current Weather");
+                adb.setMessage(sb.toString());
+                adb.setIcon(iconImg);
+
+                adb.setCancelable(true);
+                adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog weatherDialog = adb.create();
+
+                weatherDialog.show();
+
+                super.onPostExecute(data);
+            }
         }
     }
-}

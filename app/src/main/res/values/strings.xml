@@ -26,4 +26,13 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="action_about">About</string>
+    <string name="about_str">About</string>
+    <string name="about_information">
+     Author: Henrik Henriksson (hehe0601)\n
+        Course: DT031G at Miun Spring 2020\n\n
+        Description:\n
+        This app was created for the examinating project. It serves as a bathing site finder\n
+        where users can find or add new bathing sites, as well as recieve weather information at a specific site.\n
+    </string>
 </resources>
