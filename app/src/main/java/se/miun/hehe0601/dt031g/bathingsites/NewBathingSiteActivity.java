@@ -212,7 +212,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         String inputDesc = textinputDescription.getEditText().getText().toString();
         String inputAddress = textinputAddress.getEditText().getText().toString();
         String inputLat = textinputLatitude.getText().toString();
-        String inputLong = textinputLatitude.getText().toString();
+        String inputLong = textinputLongitude.getText().toString();
         String waterTemp = textinputWaterTemp.getEditText().getText().toString();
         String waterTempDate = textinputWaterTempDate.getEditText().getText().toString();
         String rating = String.valueOf(ratingBar.getRating());
