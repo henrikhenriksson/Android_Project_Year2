@@ -13,6 +13,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -71,7 +72,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     private CoordinatorLayout coordinatorLayout;
     private ProgressBar loadWeatherProgressBar;
-
     private BathingSite bathingSite;
 
     @Override
@@ -88,10 +88,25 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
+        // https://stackoverflow.com/questions/2795833/check-orientation-on-android-phone
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setNrOfBathingSites();
+        }
         super.onResume();
     }
 
+    //  https://stackoverflow.com/questions/50399194/how-to-get-size-of-room-list-in-oncreate-on-main-thread
+    private void setNrOfBathingSites() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int nrOfBathingSites;
+                nrOfBathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
+                BathingSitesView bathingSitesView = findViewById(R.id.bathingSitesView);
+                bathingSitesView.setBathSiteCounter(nrOfBathingSites);
+            }
+        }).start();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -211,11 +226,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         }
 
         new saveBathingSite().execute();
-//        if(bathingSite != null) {
-//            clearInput();
-//            Intent i = new Intent(this, MainActivity.class);
-//            startActivity(i);
-//        }
+
     }
 
 //    private void saveValidData() {
@@ -479,28 +490,12 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 return;
             }
 
-//            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
-//            adb.setTitle("Saved New Location");
-//            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + " Was added to the database");
-//
-//            adb.setCancelable(true);
-//            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.cancel();
-//                }
-//            });
-//            AlertDialog newBathingSiteDialog = adb.create();
-
             String successMessage = "New BathingSite location " + bathingSite.getBathingSiteName() + " was added to the data base.";
-
+            AppDataBase.destroyInstance();
             clearInput();
-           Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//           newBathingSiteDialog.show();
-            Toast.makeText(NewBathingSiteActivity.this, successMessage , Toast.LENGTH_LONG).show();
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            Toast.makeText(NewBathingSiteActivity.this, successMessage, Toast.LENGTH_LONG).show();
             startActivity(i);
-
-
             super.onPostExecute(inputData);
         }
     }

@@ -11,6 +11,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,6 +26,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        setNrOfBathingSites();
+        super.onResume();
     }
 
     @Override
@@ -83,5 +92,16 @@ public class MainActivity extends AppCompatActivity {
         aboutDialog.show();
     }
 
-
+    //  https://stackoverflow.com/questions/50399194/how-to-get-size-of-room-list-in-oncreate-on-main-thread
+    private void setNrOfBathingSites() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int nrOfBathingSites;
+                nrOfBathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
+                BathingSitesView bathingSitesView = findViewById(R.id.bathingSitesView);
+                bathingSitesView.setBathSiteCounter(nrOfBathingSites);
+            }
+        }).start();
+    }
 }

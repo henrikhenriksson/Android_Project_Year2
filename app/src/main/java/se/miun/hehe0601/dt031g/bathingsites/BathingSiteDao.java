@@ -15,6 +15,9 @@ public interface BathingSiteDao {
     @Query("SELECT * FROM bathingsite")
     List<BathingSite> getAll();
 
+    @Query("SELECT COUNT(uid) FROM bathingsite")
+    int getDataCount();
+
     @Insert
     void addBathingSite(BathingSite bathingSite) throws SQLiteConstraintException;
 
