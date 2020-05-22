@@ -56,8 +56,10 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 // main parts of this class fetched from https://www.youtube.com/watch?v=veOZTvAdzJ8
 public class NewBathingSiteActivity extends AppCompatActivity {
@@ -92,6 +94,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setNrOfBathingSites();
         }
+        new showRandomBathingSite().execute();
         super.onResume();
     }
 
@@ -497,6 +500,48 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             Toast.makeText(NewBathingSiteActivity.this, successMessage, Toast.LENGTH_LONG).show();
             startActivity(i);
             super.onPostExecute(inputData);
+        }
+    }
+
+    private class showRandomBathingSite extends AsyncTask<String, String, BathingSite> {
+        @Override
+        protected BathingSite doInBackground(String... strings) {
+
+            int nrOfBathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
+            BathingSite randomBathingSite = null;
+
+            if (nrOfBathingSites != 0) {
+                List<BathingSite> bathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getAll();
+                int random = ThreadLocalRandom.current().nextInt(0, nrOfBathingSites);
+                randomBathingSite = bathingSites.get(random);
+            }
+
+            return randomBathingSite;
+        }
+
+        @Override
+        protected void onPostExecute(BathingSite randomBathingSite) {
+
+            if (randomBathingSite == null) {
+                return;
+            }
+
+            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+
+            adb.setTitle("Random Bathing Site");
+            adb.setMessage(randomBathingSite.toString());
+            adb.setCancelable(true);
+
+            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog aboutDialog = adb.create();
+            aboutDialog.show();
+
+            super.onPostExecute(bathingSite);
         }
     }
 }
