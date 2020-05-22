@@ -72,6 +72,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private ProgressBar loadWeatherProgressBar;
 
+    private BathingSite bathingSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,12 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
         setTodaysDate();
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
     }
 
 
@@ -202,12 +209,13 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 return;
             }
         }
-        try {
-            new saveBathingSite().execute();
-        } catch (SQLiteConstraintException e) {
-            Toast.makeText(this, "A Bathing Site with those coordinates already exist in the database", Toast.LENGTH_SHORT).show();
-        }
 
+        new saveBathingSite().execute();
+//        if(bathingSite != null) {
+//            clearInput();
+//            Intent i = new Intent(this, MainActivity.class);
+//            startActivity(i);
+//        }
     }
 
 //    private void saveValidData() {
@@ -271,7 +279,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         String latitude;
         String longitude;
 
-        //  boolean hasAddress = !textinputAddress.getEditText().getText().toString().trim().isEmpty();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(NewBathingSiteActivity.this);
         String weatherUrl = preferences.getString("url_weather", "null");
 
@@ -297,7 +304,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     // Soucre https://square.github.io/okhttp/
     private class getWeatherInformation extends AsyncTask<String, String, Map<String, String>> {
         //TODO Add weatherURL and IconImgUrl to sharedprefs.
-        private String weatherUrl;
         private String iconImgUrl;
         private Drawable iconImg;
         private Map<String, String> fetchedWeatherData;
@@ -416,13 +422,17 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     }
 
     private class saveBathingSite extends AsyncTask<String, String, Map<String, String>> {
-        private Map<String, String> inputData;
-        private BathingSite bathingSite;
+
+        @Override
+        protected void onPreExecute() {
+            bathingSite = null;
+            super.onPreExecute();
+        }
 
         @Override
         protected Map<String, String> doInBackground(String... strings) {
 
-            inputData = getValidData();
+            Map<String, String> inputData = getValidData();
 
             Double longitude;
             Double latitude;
@@ -454,7 +464,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             try {
                 AppDataBase.getDataBase(NewBathingSiteActivity.this).bathingSiteDao().addBathingSite(bathingSite);
             } catch (SQLiteConstraintException e) {
-               return null;
+                return null;
             }
 
             return inputData;
@@ -469,21 +479,28 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 return;
             }
 
+//            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
+//            adb.setTitle("Saved New Location");
+//            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + " Was added to the database");
+//
+//            adb.setCancelable(true);
+//            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.cancel();
+//                }
+//            });
+//            AlertDialog newBathingSiteDialog = adb.create();
 
-            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
-            adb.setTitle("Saved New Location");
-            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + " Was added to the database");
+            String successMessage = "New BathingSite location " + bathingSite.getBathingSiteName() + " was added to the data base.";
 
-            adb.setCancelable(true);
-            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog newBathingSiteDialog = adb.create();
+            clearInput();
+           Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//           newBathingSiteDialog.show();
+            Toast.makeText(NewBathingSiteActivity.this, successMessage , Toast.LENGTH_LONG).show();
+            startActivity(i);
 
-            newBathingSiteDialog.show();
+
             super.onPostExecute(inputData);
         }
     }

@@ -18,5 +18,4 @@ public interface BathingSiteDao {
     @Insert
     void addBathingSite(BathingSite bathingSite) throws SQLiteConstraintException;
 
-
 }
