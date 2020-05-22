@@ -16,7 +16,6 @@ public class BathingSite {
     @PrimaryKey(autoGenerate = true)
     public int uid;
 
-
     @ColumnInfo(name = "bathing_site_name")
     public String bathingSiteName;
 
@@ -27,24 +26,24 @@ public class BathingSite {
     public String bathingSiteAddress;
 
     @ColumnInfo(name = "latitude")
-    public double latitude;
+    public Double latitude;
 
     @ColumnInfo(name = "longitude")
-    public double longitude;
+    public Double longitude;
 
     @ColumnInfo(name = "grade")
-    public double grade;
+    public Double grade;
 
     @ColumnInfo(name = "water_temp")
-    public double waterTemp;
+    public Double waterTemp;
 
     @ColumnInfo(name = "temp_date")
     public String tempDate;
 
     public BathingSite(String bathingSiteName, String bathingSiteDescription,
-                       String bathingSiteAddress,  double latitude,
-                       double longitude,  double grade,
-                        double waterTemp, String tempDate) {
+                       String bathingSiteAddress, @Nullable Double latitude, @Nullable
+                       Double longitude, @Nullable Double grade,
+                       @Nullable Double waterTemp, String tempDate) {
         this.bathingSiteName = bathingSiteName;
         this.bathingSiteDescription = bathingSiteDescription;
         this.bathingSiteAddress = bathingSiteAddress;

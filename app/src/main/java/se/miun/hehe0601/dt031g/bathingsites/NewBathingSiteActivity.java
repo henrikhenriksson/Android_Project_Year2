@@ -13,6 +13,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -201,7 +202,12 @@ public class NewBathingSiteActivity extends AppCompatActivity {
                 return;
             }
         }
-        new saveBathingSite().execute();
+        try {
+            new saveBathingSite().execute();
+        } catch (SQLiteConstraintException e) {
+            Toast.makeText(this, "A Bathing Site with those coordinates already exist in the database", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 //    private void saveValidData() {
@@ -411,21 +417,45 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     private class saveBathingSite extends AsyncTask<String, String, Map<String, String>> {
         private Map<String, String> inputData;
-        BathingSite bathingSite;
+        private BathingSite bathingSite;
 
         @Override
         protected Map<String, String> doInBackground(String... strings) {
 
             inputData = getValidData();
 
+            Double longitude;
+            Double latitude;
+            Double grade;
+            Double waterTemp;
+
+            if (hasCoordinates()) {
+                longitude = Double.parseDouble(Objects.requireNonNull(inputData.get("longitude")));
+                latitude = Double.parseDouble(Objects.requireNonNull(inputData.get("latitude")));
+            } else {
+                longitude = null;
+                latitude = null;
+            }
+            if (!inputData.get("rating").equals("")) {
+                grade = Double.parseDouble(Objects.requireNonNull(inputData.get("rating")));
+            } else {
+                grade = null;
+            }
+
+            if (!Objects.equals(inputData.get("waterTemp"), "")) {
+                waterTemp = Double.parseDouble((inputData.get("waterTemp")));
+            } else {
+                waterTemp = null;
+            }
 
             bathingSite = new BathingSite(inputData.get("name"),
-                    inputData.get("description"), inputData.get("address"),
-                    inputData.get("latitude"), inputData.get("longitude"),
-                    inputData.get("grade"), inputData.get("waterTemp"),
-                    inputData.get("waterTempDate"));
-
-            AppDataBase.getDataBase(NewBathingSiteActivity.this).bathingSiteDao().addBathingSite(bathingSite);
+                    inputData.get("description"),
+                    inputData.get("address"), longitude, latitude, grade, waterTemp, inputData.get("waterTempDate"));
+            try {
+                AppDataBase.getDataBase(NewBathingSiteActivity.this).bathingSiteDao().addBathingSite(bathingSite);
+            } catch (SQLiteConstraintException e) {
+               return null;
+            }
 
             return inputData;
         }
@@ -433,15 +463,16 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Map<String, String> inputData) {
 
+            // Not the best catch method, but works for now.
             if (inputData == null) {
-                Toast.makeText(NewBathingSiteActivity.this, "Something whent wrong saving the data.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NewBathingSiteActivity.this, "A duplicate Bathing Site with the same coordinates was found.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+
             AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
             adb.setTitle("Saved New Location");
-            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + "Was added to the database");
-
+            adb.setMessage("New BathingSite location " + bathingSite.getBathingSiteName() + " Was added to the database");
 
             adb.setCancelable(true);
             adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

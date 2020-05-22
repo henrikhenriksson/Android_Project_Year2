@@ -1,6 +1,8 @@
 package se.miun.hehe0601.dt031g.bathingsites;
 
 
+import android.database.sqlite.SQLiteConstraintException;
+
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -14,7 +16,7 @@ public interface BathingSiteDao {
     List<BathingSite> getAll();
 
     @Insert
-    void addBathingSite(BathingSite bathingSite);
+    void addBathingSite(BathingSite bathingSite) throws SQLiteConstraintException;
 
 
 }
