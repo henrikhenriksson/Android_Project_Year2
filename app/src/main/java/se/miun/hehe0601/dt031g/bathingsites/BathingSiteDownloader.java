@@ -22,10 +22,10 @@ public class BathingSiteDownloader {
 
     public BathingSite returnLastBathingSite() {
         getAllBathingSites();
-        BathingSite bathingSite = bathingSites.get(bathingSites.size() - 1);
-
-        return bathingSite;
+        if(bathingSites.isEmpty()) {
+            return null;
+        }
+        return bathingSites.get(bathingSites.size() - 1);
     }
-
 
 }
