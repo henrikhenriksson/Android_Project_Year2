@@ -502,45 +502,5 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         }
     }
 
-    public class showRandomBathingSite extends AsyncTask<String, String, BathingSite> {
-        @Override
-        protected BathingSite doInBackground(String... strings) {
-
-            int nrOfBathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
-            BathingSite randomBathingSite = null;
-
-            if (nrOfBathingSites != 0) {
-                List<BathingSite> bathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getAll();
-                int random = ThreadLocalRandom.current().nextInt(0, nrOfBathingSites);
-                randomBathingSite = bathingSites.get(random);
-            }
-
-            return randomBathingSite;
-        }
-
-        @Override
-        protected void onPostExecute(BathingSite randomBathingSite) {
-
-            if (randomBathingSite == null) {
-                return;
-            }
-
-            AlertDialog.Builder adb = new AlertDialog.Builder(NewBathingSiteActivity.this);
-
-            adb.setTitle("Random Bathing Site");
-            adb.setMessage(randomBathingSite.toString());
-            adb.setCancelable(true);
-
-            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog aboutDialog = adb.create();
-            aboutDialog.show();
-
-            super.onPostExecute(bathingSite);
-        }
-    }
+//
 }

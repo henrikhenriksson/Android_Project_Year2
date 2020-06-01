@@ -19,11 +19,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.miun.hehe0601.dt031g.bathingsites.MainActivity" />
         </activity>
-        <!-- <activity -->
-        <!-- android:name=".NewBathingSiteActivity" -->
-        <!-- android:parentActivityName=".MainActivity" -->
-        <!-- android:label="@string/title_activity_new_bathing_site" -->
-        <!-- android:theme="@style/AppTheme.NoActionBar"></activity> -->
         <activity
             android:name=".NewBathingSiteActivity"
             android:label="@string/title_activity_new_bathing_site"

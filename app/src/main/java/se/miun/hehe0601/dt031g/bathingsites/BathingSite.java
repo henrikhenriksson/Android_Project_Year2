@@ -42,7 +42,7 @@ public class BathingSite {
 
     public BathingSite(String bathingSiteName, String bathingSiteDescription,
                        String bathingSiteAddress, @Nullable Double latitude, @Nullable
-                       Double longitude, @Nullable Double grade,
+                               Double longitude, @Nullable Double grade,
                        @Nullable Double waterTemp, String tempDate) {
         this.bathingSiteName = bathingSiteName;
         this.bathingSiteDescription = bathingSiteDescription;
@@ -57,17 +57,57 @@ public class BathingSite {
 
     @Override
     public String toString() {
-        return "BathingSite{" +
-                "uid=" + uid +
-                "\n bathingSiteName='" + bathingSiteName + '\'' +
-                "\n bathingSiteDescription='" + bathingSiteDescription + '\'' +
-                "\n bathingSiteAddress='" + bathingSiteAddress + '\'' +
-                "\n latitude=" + latitude +
-                "\n longitude=" + longitude +
-                "\n grade=" + grade +
-                "\n waterTemp=" + waterTemp +
-                "\n tempDate='" + tempDate + '\'' +
-                '}';
+//        return "BathingSite{" +
+//                "uid=" + uid +
+//                "\n bathingSiteName='" + bathingSiteName + '\'' +
+//                "\n bathingSiteDescription='" + bathingSiteDescription + '\'' +
+//                "\n bathingSiteAddress='" + bathingSiteAddress + '\'' +
+//                "\n latitude=" + latitude +
+//                "\n longitude=" + longitude +
+//                "\n grade=" + grade +
+//                "\n waterTemp=" + waterTemp +
+//                "\n tempDate='" + tempDate + '\'' +
+//                '}';
+//
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Site: ")
+                .append(bathingSiteName)
+                .append("\n");
+        if (bathingSiteAddress != null) {
+            sb.append("Location: ")
+                    .append(bathingSiteAddress)
+                    .append("\n");
+        }
+        if (this.longitude != null) {
+            sb.append("Coordinates: ")
+                    .append(latitude)
+                    .append(" , ")
+                    .append(longitude)
+                    .append("\n");
+        }
+
+        if (this.bathingSiteDescription != null) {
+            sb.append("Description: ")
+                    .append(bathingSiteDescription)
+                    .append("\n");
+        }
+
+        if (this.grade != null) {
+            sb.append("Rating: ")
+                    .append(grade).append("\n");
+        }
+        if (this.waterTemp != null) {
+            sb.append("Temperature: ")
+                    .append(waterTemp)
+                    .append("\n");
+        }
+        if (this.tempDate != null) {
+            sb.append("Bathing site Saved: ").append(tempDate).append("\n");
+        }
+
+        return sb.toString();
+
     }
 
     public String getBathingSiteName() {

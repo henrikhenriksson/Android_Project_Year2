@@ -14,18 +14,14 @@ public class BathingSiteDownloader {
 
     public BathingSiteDownloader(Context mContext) {
         this.mContext = mContext;
-        getAllBathingSites();
-
     }
 
     private void getAllBathingSites() {
-
         bathingSites = AppDataBase.getDataBase(mContext).bathingSiteDao().getAll();
-
-
     }
 
     public BathingSite returnLastBathingSite() {
+        getAllBathingSites();
         BathingSite bathingSite = bathingSites.get(bathingSites.size() - 1);
 
         return bathingSite;

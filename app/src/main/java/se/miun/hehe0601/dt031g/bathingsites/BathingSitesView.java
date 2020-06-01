@@ -55,52 +55,30 @@ public class BathingSitesView extends ConstraintLayout {
         // value for debugging:
         setBathingSites();
         setIconOnClickListener();
-
-
     }
 
     private void setIconOnClickListener() {
-
         ImageView imageView = findViewById(R.id.SwimImageView);
         imageView.setOnClickListener(new OnClickListener() {
             @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(getContext(), "This Is the Icon Click", Toast.LENGTH_SHORT).show();
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        BathingSiteDownloader bsd = new BathingSiteDownloader(getContext());
-//                        BathingSite bathingSite = bsd.returnLastBathingSite();
-//                        if(bathingSite != null) {
-//                            AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-//                            adb.setTitle("Last Saved BathingSite");
-//
-//                        }
-//                    }
-//                }).start();
-
                 new AsyncTask<Void, Void, BathingSite>() {
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-
+                    BathingSiteDownloader bsd;
 
                     @Override
                     protected void onPreExecute() {
-
-                        adb.setTitle("Last Saved BathingSite");
-
-
+                      bsd = new BathingSiteDownloader(getContext());
                         super.onPreExecute();
                     }
 
                     @Override
                     protected BathingSite doInBackground(Void... voids) {
                         BathingSite bathingSite;
-                        BathingSiteDownloader bsd = new BathingSiteDownloader(getContext());
                         bathingSite = bsd.returnLastBathingSite();
-
                         return bathingSite;
                     }
 
@@ -110,6 +88,7 @@ public class BathingSitesView extends ConstraintLayout {
                         if (bathingSite == null) {
                             Toast.makeText(getContext(), "Error loading bathing sites", Toast.LENGTH_SHORT).show();
                         }
+                        adb.setTitle("Last Saved BathingSite");
                         adb.setMessage(bathingSite.toString());
                         adb.setCancelable(true);
                         adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -121,14 +100,9 @@ public class BathingSitesView extends ConstraintLayout {
                         adb.create().show();
                     }
                 }.execute();
-
-
             }
         });
-
-
     }
-
 
     public void setBathSiteCounter(int bathSiteCounter) {
         this.bathSiteCounter = bathSiteCounter;
@@ -138,6 +112,4 @@ public class BathingSitesView extends ConstraintLayout {
     private void setBathingSites() {
         NoOfBathingSites.setText(bathSiteCounter + " Bathing Sites");
     }
-
-
 }
