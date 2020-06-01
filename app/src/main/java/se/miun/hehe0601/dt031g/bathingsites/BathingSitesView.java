@@ -53,7 +53,7 @@ public class BathingSitesView extends ConstraintLayout {
 
         // Get the ammount of BathingSites
         // value for debugging:
-        setBathingSites();
+        setBathingSitesText();
         setIconOnClickListener();
     }
 
@@ -64,6 +64,7 @@ public class BathingSitesView extends ConstraintLayout {
             @Override
             public void onClick(View v) {
 
+                // AsynkTask handling downloading of the database in the background.
                 new AsyncTask<Void, Void, BathingSite>() {
 
                     AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
@@ -87,6 +88,7 @@ public class BathingSitesView extends ConstraintLayout {
                         super.onPostExecute(bathingSite);
                         if (bathingSite == null) {
                             Toast.makeText(getContext(), "Error loading bathing sites", Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         adb.setTitle("Last Saved BathingSite");
                         adb.setMessage(bathingSite.toString());
@@ -106,10 +108,14 @@ public class BathingSitesView extends ConstraintLayout {
 
     public void setBathSiteCounter(int bathSiteCounter) {
         this.bathSiteCounter = bathSiteCounter;
-        setBathingSites();
+        setBathingSitesText();
     }
 
-    private void setBathingSites() {
-        NoOfBathingSites.setText(bathSiteCounter + " Bathing Sites");
+    private void setBathingSitesText() {
+        if(bathSiteCounter == 1) {
+            NoOfBathingSites.setText(bathSiteCounter + " Bathing Site");
+        } else {
+            NoOfBathingSites.setText(bathSiteCounter + " Bathing Sites");
+        }
     }
 }
