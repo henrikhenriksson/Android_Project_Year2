@@ -57,18 +57,6 @@ public class BathingSite {
 
     @Override
     public String toString() {
-//        return "BathingSite{" +
-//                "uid=" + uid +
-//                "\n bathingSiteName='" + bathingSiteName + '\'' +
-//                "\n bathingSiteDescription='" + bathingSiteDescription + '\'' +
-//                "\n bathingSiteAddress='" + bathingSiteAddress + '\'' +
-//                "\n latitude=" + latitude +
-//                "\n longitude=" + longitude +
-//                "\n grade=" + grade +
-//                "\n waterTemp=" + waterTemp +
-//                "\n tempDate='" + tempDate + '\'' +
-//                '}';
-//
 
         StringBuilder sb = new StringBuilder();
         sb.append("Site: ")
