@@ -94,7 +94,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setNrOfBathingSites();
         }
-        new showRandomBathingSite().execute();
         super.onResume();
     }
 
@@ -503,7 +502,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         }
     }
 
-    private class showRandomBathingSite extends AsyncTask<String, String, BathingSite> {
+    public class showRandomBathingSite extends AsyncTask<String, String, BathingSite> {
         @Override
         protected BathingSite doInBackground(String... strings) {
 

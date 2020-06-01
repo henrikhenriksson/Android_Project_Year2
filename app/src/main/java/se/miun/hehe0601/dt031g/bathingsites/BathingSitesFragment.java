@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 // Source: https://www.youtube.com/watch?time_continue=4&v=MdwhhksnOAM&feature=emb_logo
 public class BathingSitesFragment extends Fragment {
-    //
+
     public BathingSitesFragment() {
         // Required empty public constructor
     }

@@ -1,15 +1,15 @@
 package se.miun.hehe0601.dt031g.bathingsites;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -54,6 +54,77 @@ public class BathingSitesView extends ConstraintLayout {
         // Get the ammount of BathingSites
         // value for debugging:
         setBathingSites();
+        setIconOnClickListener();
+
+
+    }
+
+    private void setIconOnClickListener() {
+
+        ImageView imageView = findViewById(R.id.SwimImageView);
+        imageView.setOnClickListener(new OnClickListener() {
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(getContext(), "This Is the Icon Click", Toast.LENGTH_SHORT).show();
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        BathingSiteDownloader bsd = new BathingSiteDownloader(getContext());
+//                        BathingSite bathingSite = bsd.returnLastBathingSite();
+//                        if(bathingSite != null) {
+//                            AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+//                            adb.setTitle("Last Saved BathingSite");
+//
+//                        }
+//                    }
+//                }).start();
+
+                new AsyncTask<Void, Void, BathingSite>() {
+
+                    AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+
+
+                    @Override
+                    protected void onPreExecute() {
+
+                        adb.setTitle("Last Saved BathingSite");
+
+
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected BathingSite doInBackground(Void... voids) {
+                        BathingSite bathingSite;
+                        BathingSiteDownloader bsd = new BathingSiteDownloader(getContext());
+                        bathingSite = bsd.returnLastBathingSite();
+
+                        return bathingSite;
+                    }
+
+                    @Override
+                    protected void onPostExecute(BathingSite bathingSite) {
+                        super.onPostExecute(bathingSite);
+                        if (bathingSite == null) {
+                            Toast.makeText(getContext(), "Error loading bathing sites", Toast.LENGTH_SHORT).show();
+                        }
+                        adb.setMessage(bathingSite.toString());
+                        adb.setCancelable(true);
+                        adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        adb.create().show();
+                    }
+                }.execute();
+
+
+            }
+        });
 
 
     }
@@ -64,7 +135,7 @@ public class BathingSitesView extends ConstraintLayout {
         setBathingSites();
     }
 
-    public void setBathingSites() {
+    private void setBathingSites() {
         NoOfBathingSites.setText(bathSiteCounter + " Bathing Sites");
     }
 
