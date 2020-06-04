@@ -9,25 +9,23 @@ package se.miun.hehe0601.dt031g.bathingsites;
  */
 
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,11 +67,24 @@ public class MainActivity extends AppCompatActivity {
                 showAbout();
                 break;
             case R.id.action_settings:
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
+            case R.id.action_download:
+
+                Intent downloadIntent = new Intent(this, DownloadActivity.class);
+                downloadIntent.putExtra("DOWNLOAD_URL", getDownloadUrl());
+                startActivity(downloadIntent);
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private String getDownloadUrl() {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        return preferences.getString("url_download", "https://dt031g.programvaruteknik.nu/bathingsites/download/");
+    }
+
 
     private void showAbout() {
         AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
@@ -93,17 +104,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //  https://stackoverflow.com/questions/50399194/how-to-get-size-of-room-list-in-oncreate-on-main-thread
+    @SuppressLint("StaticFieldLeak")
     private void setNrOfBathingSites() {
-        new Thread(new Runnable() {
+        final BathingSitesView bathingSitesView = findViewById(R.id.bathingSitesView);
+        new AsyncTask<Void, Void, Integer>() {
             @Override
-            public void run() {
-                int nrOfBathingSites;
-                nrOfBathingSites = AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
-                BathingSitesView bathingSitesView = findViewById(R.id.bathingSitesView);
-                bathingSitesView.setBathSiteCounter(nrOfBathingSites);
+            protected Integer doInBackground(Void... voids) {
+                return AppDataBase.getDataBase(getApplicationContext()).bathingSiteDao().getDataCount();
             }
-        }).start();
+            @Override
+            protected void onPostExecute(Integer nrOfBathingSites) {
+                if (nrOfBathingSites == null) {
+                    bathingSitesView.setBathSiteCounter(0);
+                }
+                bathingSitesView.setBathSiteCounter(nrOfBathingSites);
+                super.onPostExecute(nrOfBathingSites);
+            }
+        }.execute();
     }
-
-
 }

@@ -7,8 +7,15 @@
             app:key="url_weather"
             app:summary=""
             app:title="Weather Service URL" />
+    </PreferenceCategory>
 
+    <PreferenceCategory app:title="Download Location">
 
+        <EditTextPreference
+            app:defaultValue="https://dt031g.programvaruteknik.nu/bathingsites/download/"
+            app:key="url_download"
+            app:summary=""
+            app:title="Bathingsite Download URL" />
     </PreferenceCategory>
 
 

@@ -111,6 +111,7 @@ public class BathingSitesView extends ConstraintLayout {
         setBathingSitesText();
     }
 
+    @SuppressLint("SetTextI18n")
     private void setBathingSitesText() {
         if(bathSiteCounter == 1) {
             NoOfBathingSites.setText(bathSiteCounter + " Bathing Site");

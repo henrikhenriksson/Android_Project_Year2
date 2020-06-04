@@ -34,10 +34,34 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
+            setWeatherURL();
+            setDownloadURL();
+        }
+
+        private void setDownloadURL() {
+
+            final EditTextPreference downloadURL = findPreference("url_download");
+            downloadURL.setSummary(downloadURL.getText());
+
+            downloadURL.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    try {
+                        URL newUrl = new URL(newValue.toString());
+                    } catch (MalformedURLException e) {
+                        Toast.makeText(getContext(), "Invalid URL, no change saved", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    downloadURL.setSummary(newValue.toString());
+                    return true;
+                }
+            });
+        }
+
+        private void setWeatherURL() {
             final EditTextPreference weatherURL = findPreference("url_weather");
             assert weatherURL != null;
             weatherURL.setSummary(weatherURL.getText());
-
             weatherURL.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {

@@ -473,7 +473,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
             bathingSite = new BathingSite(inputData.get("name"),
                     inputData.get("description"),
-                    inputData.get("address"), longitude, latitude, grade, waterTemp, inputData.get("waterTempDate"));
+                    inputData.get("address"), latitude, longitude, grade, waterTemp, inputData.get("waterTempDate"));
             try {
                 AppDataBase.getDataBase(NewBathingSiteActivity.this).bathingSiteDao().addBathingSite(bathingSite);
             } catch (SQLiteConstraintException e) {

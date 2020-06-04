@@ -37,4 +37,7 @@
     </string>
     <string name="bathing_sites">Bathing Sites</string>
     <string name="bathing_site_image">Bathing Site image</string>
+    <string name="download_info">Download in Progress. Please wait...</string>
+    <string name="action_download">Download</string>
+    <string name="download_bathing_sites">Download Bathing Sites</string>
 </resources>
