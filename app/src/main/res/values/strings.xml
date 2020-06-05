@@ -34,6 +34,7 @@
         Description:\n
         This app was created for the examinating project. It serves as a bathing site finder\n
         where users can find or add new bathing sites, as well as recieve weather information at a specific site.\n
+        the user is also able to download new bathingsites.\n As well as click the icon to see information about a random bathing site.\n
     </string>
     <string name="bathing_sites">Bathing Sites</string>
     <string name="bathing_site_image">Bathing Site image</string>
