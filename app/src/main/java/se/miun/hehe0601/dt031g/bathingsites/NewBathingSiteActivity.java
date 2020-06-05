@@ -75,7 +75,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
 
     private ProgressDialog progressDialog;
-   // private ProgressBar loadWeatherProgressBar;
     private BathingSite bathingSite;
 
     @Override
@@ -154,8 +153,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         // Inspiration by https://www.youtube.com/watch?v=LpNJhJF3gW8
         ratingBar = findViewById(R.id.bathing_site_rating_bar);
-
-      //  loadWeatherProgressBar = findViewById(R.id.weather_progress_bar);
 
     }
 
@@ -301,12 +298,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-//            loadWeatherProgressBar.setMax(100);
-//            loadWeatherProgressBar.setProgress(0);
-//            loadWeatherProgressBar.setVisibility(View.VISIBLE);
-
             progressDialog.show();
-
             super.onPreExecute();
         }
 
@@ -481,6 +473,4 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             super.onPostExecute(inputData);
         }
     }
-
-//
 }
