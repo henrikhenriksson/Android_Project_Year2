@@ -73,8 +73,9 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     private TextInputLayout textinputWaterTempDate;
     private RatingBar ratingBar;
 
-    private CoordinatorLayout coordinatorLayout;
-    private ProgressBar loadWeatherProgressBar;
+
+    private ProgressDialog progressDialog;
+   // private ProgressBar loadWeatherProgressBar;
     private BathingSite bathingSite;
 
     @Override
@@ -84,9 +85,13 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.new_bathing_site_tool_bar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        coordinatorLayout = findViewById(R.id.new_bathingsite_coordinator);
         findViewsById();
         setTodaysDate();
+
+        progressDialog = new ProgressDialog(NewBathingSiteActivity.this);
+        progressDialog.setMessage("Getting Weather for location");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     }
 
     @Override
@@ -150,7 +155,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         // Inspiration by https://www.youtube.com/watch?v=LpNJhJF3gW8
         ratingBar = findViewById(R.id.bathing_site_rating_bar);
 
-        loadWeatherProgressBar = findViewById(R.id.weather_progress_bar);
+      //  loadWeatherProgressBar = findViewById(R.id.weather_progress_bar);
 
     }
 
@@ -296,9 +301,12 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
 
-            loadWeatherProgressBar.setMax(100);
-            loadWeatherProgressBar.setProgress(0);
-            loadWeatherProgressBar.setVisibility(View.VISIBLE);
+//            loadWeatherProgressBar.setMax(100);
+//            loadWeatherProgressBar.setProgress(0);
+//            loadWeatherProgressBar.setVisibility(View.VISIBLE);
+
+            progressDialog.show();
+
             super.onPreExecute();
         }
 
@@ -373,7 +381,8 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Map<String, String> data) {
 
-            loadWeatherProgressBar.setVisibility(View.INVISIBLE);
+       //     loadWeatherProgressBar.setVisibility(View.INVISIBLE);
+            progressDialog.dismiss();
 
             if (data == null) {
                 Toast.makeText(NewBathingSiteActivity.this, "No Weather data was found", Toast.LENGTH_SHORT).show();

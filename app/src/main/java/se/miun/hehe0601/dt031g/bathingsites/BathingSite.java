@@ -69,9 +69,9 @@ public class BathingSite {
         }
         if (this.longitude != null) {
             sb.append("Coordinates: ")
-                    .append(longitude)
-                    .append(" , ")
                     .append(latitude)
+                    .append(" , ")
+                    .append(longitude)
                     .append("\n");
         }
 

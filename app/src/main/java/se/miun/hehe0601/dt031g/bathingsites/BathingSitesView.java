@@ -79,7 +79,8 @@ public class BathingSitesView extends ConstraintLayout {
                     @Override
                     protected BathingSite doInBackground(Void... voids) {
                         BathingSite bathingSite;
-                        bathingSite = bsd.returnLastBathingSite();
+                      //  bathingSite = bsd.returnLastBathingSite();
+                        bathingSite = bsd.returnRandomBathingSite();
                         return bathingSite;
                     }
 
@@ -90,7 +91,7 @@ public class BathingSitesView extends ConstraintLayout {
                             Toast.makeText(getContext(), "Error loading bathing sites", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        adb.setTitle("Last Saved BathingSite");
+                        adb.setTitle("Random BathingSite:");
                         adb.setMessage(bathingSite.toString());
                         adb.setCancelable(true);
                         adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

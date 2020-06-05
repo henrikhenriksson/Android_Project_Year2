@@ -46,7 +46,6 @@ public class DownloadActivity extends AppCompatActivity {
 
     private RelativeLayout progressLayout;
     private ProgressBar progressBar;
-    private TextView downloadInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,6 @@ public class DownloadActivity extends AppCompatActivity {
         this.mContext = this;
         progressLayout = findViewById(R.id.progressBarHolder);
         progressBar = findViewById(R.id.progressBar);
-        downloadInfo = findViewById(R.id.downloadInformation);
         createWebView();
         startDownloadListener();
     }
@@ -105,7 +103,6 @@ public class DownloadActivity extends AppCompatActivity {
     private class myAsyncDownload extends AsyncTask<String, Integer, File> {
         private int downloadCounter = 0;
         private int duplicateCounter = 0;
-
 
         @Override
         protected void onPreExecute() {
@@ -202,13 +199,12 @@ public class DownloadActivity extends AppCompatActivity {
                     lines) {
                 // Replace all " signs, split the array by "," values.
                 line = line.replaceAll("\"", "");
-                String[] bathingSiteValues = line.split(",", 3);
+                String[] bathingSiteValues = line.split(",", 4);
                 String longitude = bathingSiteValues[0];
                 String latitude = bathingSiteValues[1];
 
                 String bathingSiteName = bathingSiteValues[2];
                 String bathingSiteAddress = null;
-
 
                 if(bathingSiteValues.length > 3) {
                     bathingSiteAddress = bathingSiteValues[3];

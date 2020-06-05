@@ -16,13 +16,13 @@
     android:background="@color/cerulean"
     tools:context=".NewBathingSiteActivityFragment">
 
-    <ProgressBar
-        android:id="@+id/weather_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_gravity="center"
-        android:visibility="invisible"/>
+<!--    <ProgressBar-->
+<!--        android:id="@+id/weather_progress_bar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        style="?android:attr/progressBarStyleHorizontal"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:visibility="invisible"/>-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_bathing_site_name"
