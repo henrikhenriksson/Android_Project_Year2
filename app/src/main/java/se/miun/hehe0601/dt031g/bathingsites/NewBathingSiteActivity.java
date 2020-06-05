@@ -157,8 +157,9 @@ public class NewBathingSiteActivity extends AppCompatActivity {
     }
 
     private boolean hasCoordinates() {
-        return !textinputLongitude.getText().toString().isEmpty()
-                && !textinputLongitude.getText().toString().isEmpty();
+
+        return !textinputLatitude.getText().toString().trim().isEmpty()
+                || !textinputLongitude.getText().toString().trim().isEmpty();
     }
 
     private boolean hasAddress() {
@@ -204,11 +205,15 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
         boolean isValidLatLng = false;
 
-        if (hasCoordinates()) {
+        boolean hasLat = !textinputLatitude.getText().toString().trim().isEmpty();
+        boolean hasLong = !textinputLongitude.getText().toString().trim().isEmpty();
+
+        if (hasLong && hasLat) {
             double inputLat = Double.parseDouble(textinputLatitude.getText().toString());
             double inputLong = Double.parseDouble(textinputLongitude.getText().toString());
             isValidLatLng = isInRange(inputLat, inputLong);
         }
+
         return isValidLatLng;
     }
 
@@ -373,7 +378,7 @@ public class NewBathingSiteActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Map<String, String> data) {
 
-       //     loadWeatherProgressBar.setVisibility(View.INVISIBLE);
+            //     loadWeatherProgressBar.setVisibility(View.INVISIBLE);
             progressDialog.dismiss();
 
             if (data == null) {
