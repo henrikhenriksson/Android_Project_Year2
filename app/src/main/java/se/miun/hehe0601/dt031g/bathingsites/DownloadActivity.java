@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -25,12 +26,19 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class DownloadActivity extends AppCompatActivity {
     Context mContext;
@@ -112,10 +120,9 @@ public class DownloadActivity extends AppCompatActivity {
         protected File doInBackground(String... strings) {
             String urlStr = strings[0];
 
-            BufferedInputStream is = null;
-            BufferedOutputStream os = null;
-
-            File cacheFile = new File(mContext.getCacheDir().getAbsolutePath(), "bathingSites");
+            BufferedInputStream is;
+            BufferedOutputStream os;
+            File cacheFile;
 
             try {
                 URL url = new URL(urlStr);
@@ -123,8 +130,9 @@ public class DownloadActivity extends AppCompatActivity {
                 conn.connect();
 
                 is = new BufferedInputStream(url.openStream());
-                os = new BufferedOutputStream(new FileOutputStream(cacheFile));
 
+                cacheFile = new File(mContext.getCacheDir().getAbsolutePath(), "bathingSites.tmp");
+                os = new BufferedOutputStream(new FileOutputStream(cacheFile));
 
                 byte[] buf = new byte[1024];
                 int fileLength = conn.getContentLength();
@@ -138,8 +146,6 @@ public class DownloadActivity extends AppCompatActivity {
                     SystemClock.sleep(10);
                 }
 
-                saveBathingSites(cacheFile);
-
                 os.flush();
                 os.close();
                 is.close();
@@ -149,6 +155,12 @@ public class DownloadActivity extends AppCompatActivity {
                 return null;
             } catch (IOException e) {
                 Log.e("Download", "Error opening/closing connection " + urlStr + "\n" + e.toString());
+                return null;
+            }
+
+            try {
+                saveBathingSites();
+            } catch (FileNotFoundException e) {
                 return null;
             }
 
@@ -162,71 +174,64 @@ public class DownloadActivity extends AppCompatActivity {
         }
 
         // source: https://stackoverflow.com/questions/34417581/how-to-replace-the-characher-n-as-a-new-line-in-android
+        // https://developer.android.com/training/data-storage/app-specific
         // https://stackoverflow.com/questions/20164875/android-using-indexof
-        private void saveBathingSites(File cacheFile) {
-            BufferedReader bufferedReader = null;
-            String line = "";
+        private void saveBathingSites() throws FileNotFoundException {
 
-            try {
-                bufferedReader = new BufferedReader(new FileReader(cacheFile));
+            // find the cache file in the cachedir.
+            FileInputStream fileInputStream = new FileInputStream(new File(mContext.getCacheDir().getAbsolutePath(), "bathingSites.tmp"));
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
 
-                while ((line = bufferedReader.readLine()) != null) {
-                    line = line.replaceFirst("\"", "");
-                    String coordinates = line.substring(0, line.indexOf("\""));
-                    String bathingSiteInfo = line.substring(line.indexOf("\"") + 1);
-                    bathingSiteInfo = bathingSiteInfo.replaceAll("\"", "");
+            // an arraylist will hold all the values we extract from the file.
+            ArrayList<String> lines = new ArrayList<>();
 
-                    // get the Coordinates:
-                    String longitude = coordinates.substring(0, coordinates.indexOf(","));
-                    String latitude = coordinates.substring(coordinates.indexOf(",") + 1);
-                    latitude = latitude.replaceAll(",", "");
+            // the while loop will continue adding lines to the arraylist as long as it is not null.
+            try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    lines.add(line);
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                Log.e("IOException", Objects.requireNonNull(e.getMessage()));
+            }
 
-                    Double longi = Double.parseDouble(longitude);
-                    Double lati = Double.parseDouble(latitude);
+            // for each line in the lines arraylist
+           // source https://stackoverflow.com/questions/18462826/split-string-only-on-first-instance-java
+            for (String line :
+                    lines) {
+                // Replace all " signs, split the array by "," values.
+                line = line.replaceAll("\"", "");
+                String[] bathingSiteValues = line.split(",", 3);
+                String longitude = bathingSiteValues[0];
+                String latitude = bathingSiteValues[1];
 
-                    String bathingSiteName = null;
-                    String bathingSiteAddress = null;
-
-                    if (bathingSiteInfo.contains(",")) {
-                        bathingSiteName = bathingSiteInfo.substring(0, bathingSiteInfo.indexOf(","));
-                        bathingSiteAddress = bathingSiteInfo.substring(bathingSiteInfo.indexOf(",") + 1);
-                    } else {
-                        bathingSiteName = bathingSiteInfo;
-                    }
-
-                    // Save the bathingsite to Database
-                    BathingSite bathingSite = new BathingSite(bathingSiteName,
-                            "",
-                            bathingSiteAddress,
-                            lati,
-                            longi,
-                            null,
-                            null,
-                            "");
-
-                    try {
-                        AppDataBase.getDataBase(mContext).bathingSiteDao().addBathingSite(bathingSite);
-                        downloadCounter++;
-                    } catch (SQLiteConstraintException e) {
-                        duplicateCounter++;
-                    }
+                String bathingSiteName = bathingSiteValues[2];
+                String bathingSiteAddress = null;
 
 
+                if(bathingSiteValues.length > 3) {
+                    bathingSiteAddress = bathingSiteValues[3];
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bufferedReader != null) {
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                // Save the bathingsite to Database
+                BathingSite bathingSite = new BathingSite(bathingSiteName,
+                        "",
+                        bathingSiteAddress,
+                        latitude,
+                        longitude,
+                        null,
+                        null,
+                        "");
+
+                try {
+                    AppDataBase.getDataBase(mContext).bathingSiteDao().addBathingSite(bathingSite);
+                    downloadCounter++;
+                } catch (SQLiteConstraintException e) {
+                    duplicateCounter++;
                 }
             }
         }
-
 
         @Override
         protected void onPostExecute(File cacheFile) {

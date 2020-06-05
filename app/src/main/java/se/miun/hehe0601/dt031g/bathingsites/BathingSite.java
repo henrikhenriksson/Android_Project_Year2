@@ -26,10 +26,10 @@ public class BathingSite {
     public String bathingSiteAddress;
 
     @ColumnInfo(name = "latitude")
-    public Double latitude;
+    public String latitude;
 
     @ColumnInfo(name = "longitude")
-    public Double longitude;
+    public String longitude;
 
     @ColumnInfo(name = "grade")
     public Double grade;
@@ -41,8 +41,8 @@ public class BathingSite {
     public String tempDate;
 
     public BathingSite(String bathingSiteName, String bathingSiteDescription,
-                       String bathingSiteAddress, @Nullable Double latitude, @Nullable
-                               Double longitude, @Nullable Double grade,
+                       String bathingSiteAddress, String latitude,
+                               String longitude, @Nullable Double grade,
                        @Nullable Double waterTemp, String tempDate) {
         this.bathingSiteName = bathingSiteName;
         this.bathingSiteDescription = bathingSiteDescription;

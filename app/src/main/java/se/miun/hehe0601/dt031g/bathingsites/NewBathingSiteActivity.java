@@ -10,6 +10,7 @@ package se.miun.hehe0601.dt031g.bathingsites;
  */
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -231,35 +232,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
     }
 
-//    private void saveValidData() {
-//        // Local variables as we only wish to save them if they are valid.
-//        String inputName = textinputName.getEditText().getText().toString();
-//        String inputDesc = textinputDescription.getEditText().getText().toString();
-//        String inputAddress = textinputAddress.getEditText().getText().toString();
-//        String inputLat = textinputLatitude.getText().toString();
-//        String inputLong = textinputLongitude.getText().toString();
-//        String waterTemp = textinputWaterTemp.getEditText().getText().toString();
-//        String waterTempDate = textinputWaterTempDate.getEditText().getText().toString();
-//        String rating = String.valueOf(ratingBar.getRating());
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("Name: " + inputName + "\n")
-//                .append("Description: " + inputDesc + "\n")
-//                .append("Address: " + inputAddress + "\n")
-//                .append("Latitude: " + inputLat + " ")
-//                .append("Longitude: " + inputLong + "\n")
-//                .append("Rating: " + rating + "\n")
-//                .append("Water Temp: " + waterTemp + "\n")
-//                .append("Date For WaterTemp: " + waterTempDate);
-//
-//        // https://stackoverflow.com/questions/32228300/how-to-prevent-my-snackbar-text-from-being-truncated-on-android
-//        Snackbar snackbar = Snackbar.make(coordinatorLayout, sb.toString(), Snackbar.LENGTH_LONG);
-//        View snackbarview = snackbar.getView();
-//        TextView snackTextView = snackbarview.findViewById(com.google.android.material.R.id.snackbar_text);
-//        snackTextView.setMaxLines(30);
-//        snackbar.show();
-//    }
 
     private Map<String, String> getValidData() {
         Map<String, String> inputData = new LinkedHashMap<String, String>();
@@ -398,7 +370,6 @@ public class NewBathingSiteActivity extends AppCompatActivity {
             return fetchedWeatherData;
         }
 
-
         @Override
         protected void onPostExecute(Map<String, String> data) {
 
@@ -447,14 +418,14 @@ public class NewBathingSiteActivity extends AppCompatActivity {
 
             Map<String, String> inputData = getValidData();
 
-            Double longitude;
-            Double latitude;
+            String longitude;
+            String latitude;
             Double grade;
             Double waterTemp;
 
             if (hasCoordinates()) {
-                longitude = Double.parseDouble(Objects.requireNonNull(inputData.get("longitude")));
-                latitude = Double.parseDouble(Objects.requireNonNull(inputData.get("latitude")));
+                longitude = inputData.get("longitude");
+                latitude = inputData.get("latitude");
             } else {
                 longitude = null;
                 latitude = null;
